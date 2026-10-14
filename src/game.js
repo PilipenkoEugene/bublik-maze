@@ -585,20 +585,25 @@ Game.prototype.startGame = function () {
 
 Game.prototype.initForm = function () {
   var self = this, form = this.ref.form, ref = this.ref;
-  for (var a = FORM.minAge; a <= FORM.maxAge; a++) {
-    var o = document.createElement('option');
-    o.value = o.textContent = a;
-    ref.ageSelect.appendChild(o);
-  }
   if (FORM.privacyUrl) { ref.privacyLink.href = FORM.privacyUrl; ref.privacyWrap.hidden = false; }
 
-  var phone = form.elements.parent_phone;
-  phone.addEventListener('input', function (e) {
-    // При стирании не переформатируем, иначе не удалить скобку или дефис.
-    if (e.inputType && e.inputType.indexOf('delete') === 0) return;
+  // Маски ввода. При стирании не переформатируем, иначе не удалить точку, скобку или дефис.
+  function mask(el, fmt) {
+    el.addEventListener('input', function (e) {
+      if (e.inputType && e.inputType.indexOf('delete') === 0) return;
+      el.value = fmt(el.value);
+    });
+  }
+  var phone = form.elements.parent_phone, birth = form.elements.child_birthdate;
+  mask(phone, formatPhone);
+  mask(birth, formatDate);
+  // В пустое поле телефона сразу подставляем «+7 » — видно, что дальше набирать номер.
+  phone.addEventListener('focus', function () { if (!phone.value) phone.value = '+7 '; });
+  phone.addEventListener('blur', function () {
     phone.value = formatPhone(phone.value);
+    if (phone.value === '+7 ') phone.value = '';
   });
-  phone.addEventListener('blur', function () { phone.value = formatPhone(phone.value); });
+  birth.addEventListener('blur', function () { birth.value = formatDate(birth.value).replace(/\.$/, ''); });
   form.addEventListener('input', function (e) { e.target.classList.remove('bm-bad'); ref.formError.textContent = ''; });
   form.addEventListener('submit', function (e) { e.preventDefault(); self.submitForm(); });
 
@@ -628,7 +633,7 @@ Game.prototype.submitForm = function () {
   var f = this.ref.form.elements, self = this, bad = [];
   var v = {
     child_name: f.child_name.value.trim(),
-    child_age: f.child_age.value,
+    child_birthdate: formatDate(f.child_birthdate.value).replace(/\.$/, ''),
     parent_name: f.parent_name.value.trim(),
     parent_phone: formatPhone(f.parent_phone.value),
     parent_email: f.parent_email.value.trim(),
@@ -636,12 +641,16 @@ Game.prototype.submitForm = function () {
     consent_ads: f.consent_ads.checked
   };
   if (v.child_name.length < 2) bad.push(['child_name', 'Напишите имя ребёнка']);
-  if (!v.child_age) bad.push(['child_age', 'Выберите возраст']);
+  var age = ageFromDate(v.child_birthdate);
+  if (!v.child_birthdate) bad.push(['child_birthdate', 'Укажите дату рождения ребёнка']);
+  else if (age === null) bad.push(['child_birthdate', 'Проверьте дату рождения: ДД.ММ.ГГГГ']);
+  else if (age < 0) bad.push(['child_birthdate', 'Дата рождения не может быть в будущем']);
+  else if (age > FORM.maxChildAge) bad.push(['child_birthdate', 'Проверьте год рождения ребёнка']);
   if (v.parent_name.length < 2) bad.push(['parent_name', 'Напишите ваше имя']);
   if (v.parent_phone.replace(/\D/g, '').length !== 11) bad.push(['parent_phone', 'Проверьте номер телефона']);
   if (v.parent_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.parent_email)) bad.push(['parent_email', 'Проверьте e-mail']);
   if (!v.consent_pd) bad.push(['consent_pd', 'Нужно согласие на обработку данных']);
-  ['child_name', 'child_age', 'parent_name', 'parent_phone', 'parent_email', 'consent_pd'].forEach(function (n) {
+  ['child_name', 'child_birthdate', 'parent_name', 'parent_phone', 'parent_email', 'consent_pd'].forEach(function (n) {
     var el = f[n], isBad = bad.some(function (b) { return b[0] === n; });
     (el.type === 'checkbox' ? el.parentNode : el).classList.toggle('bm-bad', isBad);
   });
@@ -658,7 +667,7 @@ Game.prototype.submitForm = function () {
   var profile = {
     player_id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
     gift_code: randomCode(),
-    child_name: v.child_name, child_age: +v.child_age,
+    child_name: v.child_name, child_birthdate: v.child_birthdate, child_age: age,
     parent_name: v.parent_name, parent_phone: v.parent_phone, parent_email: v.parent_email,
     consent_pd: v.consent_pd ? 'да' : 'нет', consent_ads: v.consent_ads ? 'да' : 'нет'
   };
@@ -697,8 +706,8 @@ Game.prototype.showGift = function (fromMap) {
   this.ref.giftTitle.textContent = p.child_name ? p.child_name + ', ты молодец!' : 'Ты молодец!';
   this.ref.giftText.textContent = GIFT.title + ' ' + GIFT.text;
   this.ref.giftCode.textContent = p.gift_code || '';
-  var a = p.child_age, years = a % 10 >= 2 && a % 10 <= 4 && (a < 12 || a > 14) ? 'года' : a % 10 === 1 && a !== 11 ? 'год' : 'лет';
-  this.ref.giftName.textContent = p.child_name ? p.child_name + ', ' + a + ' ' + years : '';
+  var a = p.child_birthdate ? ageFromDate(p.child_birthdate) : p.child_age;
+  this.ref.giftName.textContent = p.child_name ? p.child_name + ', ' + a + ' ' + yearsWord(a) + (p.child_birthdate ? ' (' + p.child_birthdate + ')' : '') : '';
   this.ref.staffBtn.hidden = claimed;
   this.ref.giftClaimed.hidden = !claimed;
   this.ref.giftContinue.textContent = fromMap ? 'К уровням' : 'Играть дальше';

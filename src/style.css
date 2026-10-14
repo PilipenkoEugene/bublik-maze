@@ -244,7 +244,7 @@
 }
 .bm-form legend { float: left; width: 100%; padding: 0; margin-bottom: 2px; font-size: 17px; font-weight: 900; color: var(--bm-pink); }
 .bm-field { display: flex; flex-direction: column; gap: 4px; flex: 1 1 200px; min-width: 0; }
-.bm-field.bm-field-short { flex: 0 1 110px; }
+.bm-field.bm-field-date { flex: 0 1 170px; }
 .bm-field > span { font-size: 14px; font-weight: 800; }
 .bm-field i { font-style: normal; font-weight: 600; opacity: .6; }
 .bm-form input[type="text"], .bm-form input:not([type]), .bm-form input[type="tel"], .bm-form input[type="email"], .bm-form select {

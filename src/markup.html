@@ -46,12 +46,12 @@
         <fieldset>
           <legend>Ребёнок</legend>
           <label class="bm-field"><span>Имя</span><input name="child_name" maxlength="40" autocomplete="off" placeholder="Например, Маша"></label>
-          <label class="bm-field bm-field-short"><span>Возраст</span><select name="child_age" data-ref="ageSelect"><option value="">—</option></select></label>
+          <label class="bm-field bm-field-date"><span>Дата рождения</span><input name="child_birthdate" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="ДД.ММ.ГГГГ"></label>
         </fieldset>
         <fieldset>
           <legend>Родитель</legend>
           <label class="bm-field"><span>Имя</span><input name="parent_name" maxlength="60" autocomplete="name" placeholder="Как к вам обращаться"></label>
-          <label class="bm-field"><span>Телефон</span><input name="parent_phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__"></label>
+          <label class="bm-field"><span>Телефон</span><input name="parent_phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (900) 000-00-00"></label>
           <label class="bm-field"><span>E-mail <i>(необязательно)</i></span><input name="parent_email" type="email" inputmode="email" autocomplete="email" maxlength="80"></label>
         </fieldset>
         <label class="bm-check"><input type="checkbox" name="consent_pd"><span>Я родитель (законный представитель) и даю согласие на обработку моих персональных данных и данных ребёнка<span data-ref="privacyWrap" hidden> в соответствии с <a data-ref="privacyLink" target="_blank" rel="noopener">политикой конфиденциальности</a></span></span></label>
