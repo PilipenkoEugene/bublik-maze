@@ -1,0 +1,123 @@
+<div class="bm-root" data-bublik-maze data-screen="start" tabindex="0">
+  <div class="bm-hud">
+    <button class="bm-pill bm-pill-btn" type="button" data-act="map" title="Карта уровней" aria-label="Карта уровней">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>
+      <b data-ref="level">1</b>
+    </button>
+    <div class="bm-pill" data-ref="scorePill"><span class="bm-bagel-ico" data-ref="scoreIco"></span><b data-ref="score">0</b>/<span data-ref="total">0</span></div>
+    <div class="bm-pill bm-key-pill" data-ref="keyPill" title="Ключ" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="12" r="4"/><path d="M11 12h10M18 12v4M21 12v3"/></svg>
+    </div>
+    <div class="bm-spacer"></div>
+    <button class="bm-btn" type="button" data-act="hint" title="Подсказка" aria-label="Подсказка">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg>
+    </button>
+    <button class="bm-btn" type="button" data-act="music" title="Музыка" aria-label="Музыка">
+      <svg data-ref="musOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>
+      <svg data-ref="musOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/><path d="M3 3l18 18"/></svg>
+    </button>
+    <button class="bm-btn" type="button" data-act="sound" title="Звуки" aria-label="Звуки">
+      <svg data-ref="sndOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+      <svg data-ref="sndOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+    </button>
+  </div>
+
+  <div class="bm-stage" data-ref="stage">
+    <canvas data-ref="canvas"></canvas>
+    <div class="bm-toast" data-ref="toast"></div>
+
+    <div class="bm-overlay bm-show" data-ref="startScreen">
+      <img class="bm-hero" data-ref="hero" alt="">
+      <h2>Бублики в лабиринте</h2>
+      <p data-ref="startText">Помоги котику собрать все бублики и найти выход!</p>
+      <button class="bm-big" type="button" data-act="play">Играть</button>
+      <div class="bm-small">Стрелки, свайп или нажми на клетку</div>
+      <button class="bm-link" type="button" data-act="newPlayer" data-ref="startNewPlayer" hidden>Играет кто-то другой? Новый игрок</button>
+    </div>
+
+    <div class="bm-overlay bm-panel" data-ref="formScreen">
+      <div class="bm-panel-head">
+        <button class="bm-btn" type="button" data-act="toStart" title="Назад" aria-label="Назад">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <h3>Давай знакомиться!</h3>
+      </div>
+      <form class="bm-form" data-ref="form" novalidate>
+        <fieldset>
+          <legend>Ребёнок</legend>
+          <label class="bm-field"><span>Имя</span><input name="child_name" maxlength="40" autocomplete="off" placeholder="Например, Маша"></label>
+          <label class="bm-field bm-field-short"><span>Возраст</span><select name="child_age" data-ref="ageSelect"><option value="">—</option></select></label>
+        </fieldset>
+        <fieldset>
+          <legend>Родитель</legend>
+          <label class="bm-field"><span>Имя</span><input name="parent_name" maxlength="60" autocomplete="name" placeholder="Как к вам обращаться"></label>
+          <label class="bm-field"><span>Телефон</span><input name="parent_phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__"></label>
+          <label class="bm-field"><span>E-mail <i>(необязательно)</i></span><input name="parent_email" type="email" inputmode="email" autocomplete="email" maxlength="80"></label>
+        </fieldset>
+        <label class="bm-check"><input type="checkbox" name="consent_pd"><span>Я родитель (законный представитель) и даю согласие на обработку моих персональных данных и данных ребёнка<span data-ref="privacyWrap" hidden> в соответствии с <a data-ref="privacyLink" target="_blank" rel="noopener">политикой конфиденциальности</a></span></span></label>
+        <label class="bm-check"><input type="checkbox" name="consent_ads"><span>Хочу получать новости и акции</span></label>
+        <div class="bm-form-error" data-ref="formError" role="alert"></div>
+        <button class="bm-big" type="submit" data-ref="formSubmit">Начать игру</button>
+      </form>
+    </div>
+
+    <div class="bm-overlay bm-panel bm-gift" data-ref="giftScreen">
+      <div class="bm-gift-icon">🎁</div>
+      <h2 data-ref="giftTitle"></h2>
+      <p data-ref="giftText"></p>
+      <div class="bm-gift-code"><small>Код подарка</small><b data-ref="giftCode"></b><small data-ref="giftName"></small></div>
+      <button class="bm-big" type="button" data-act="giftContinue" data-ref="giftContinue">Играть дальше</button>
+      <button class="bm-staff" type="button" data-ref="staffBtn"><span class="bm-staff-fill"></span><span class="bm-staff-label">Для сотрудника: удерживайте, чтобы отметить выдачу</span></button>
+      <div class="bm-claimed" data-ref="giftClaimed" hidden>
+        <b>✓ Подарок выдан</b>
+        <button class="bm-link" type="button" data-act="newPlayer">Новый игрок</button>
+      </div>
+    </div>
+
+    <div class="bm-overlay bm-panel" data-ref="mapScreen">
+      <div class="bm-panel-head">
+        <h3>Уровни</h3>
+        <div class="bm-pill"><span class="bm-bagel-ico"></span><b class="bm-wallet">0</b></div>
+        <button class="bm-big bm-mid" type="button" data-act="wardrobe">Гардероб</button>
+      </div>
+      <button class="bm-gift-btn" type="button" data-act="gift" data-ref="giftBtn" hidden>🎁 <span>Твой подарок ждёт! Нажми, чтобы показать код</span></button>
+      <div class="bm-worlds" data-ref="worlds"></div>
+      <div class="bm-player">Играет: <b data-ref="playerName"></b> · <button class="bm-link" type="button" data-act="newPlayer">Новый игрок</button></div>
+    </div>
+
+    <div class="bm-overlay bm-panel" data-ref="wardrobeScreen">
+      <div class="bm-panel-head">
+        <button class="bm-btn" type="button" data-act="map" title="Назад" aria-label="Назад">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <h3>Гардероб</h3>
+        <div class="bm-pill"><span class="bm-bagel-ico"></span><b class="bm-wallet">0</b></div>
+      </div>
+      <div class="bm-wardrobe">
+        <canvas class="bm-preview" data-ref="preview"></canvas>
+        <div class="bm-items" data-ref="items"></div>
+      </div>
+    </div>
+
+    <div class="bm-overlay" data-ref="winScreen">
+      <h2 data-ref="winTitle">Ура! Выход найден!</h2>
+      <div class="bm-stars" data-ref="stars"><span class="bm-star">★</span><span class="bm-star">★</span><span class="bm-star">★</span></div>
+      <p data-ref="winText"></p>
+      <p class="bm-earned" data-ref="winEarned"></p>
+      <div class="bm-row">
+        <button class="bm-btn bm-btn-lg" type="button" data-act="map" title="Карта" aria-label="Карта">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>
+        </button>
+        <button class="bm-big bm-alt" type="button" data-act="again">Ещё раз</button>
+        <button class="bm-big" type="button" data-act="next" data-ref="nextBtn">Дальше</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bm-dpad">
+    <button type="button" data-dir="up" aria-label="Вверх"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 5l8 11H4z"/></svg></button>
+    <button type="button" data-dir="left" aria-label="Влево"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 12l11-8v16z"/></svg></button>
+    <button type="button" data-dir="down" aria-label="Вниз"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 19L4 8h16z"/></svg></button>
+    <button type="button" data-dir="right" aria-label="Вправо"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 12L8 20V4z"/></svg></button>
+  </div>
+</div>
