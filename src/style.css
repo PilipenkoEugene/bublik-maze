@@ -87,6 +87,9 @@
   min-height: 300px;
 }
 .bm-stage canvas { display: block; touch-action: none; cursor: pointer; }
+/* Во время игры жесты внутри игры не прокручивают и не масштабируют страницу. */
+.bm-root[data-screen="game"] { touch-action: none; overscroll-behavior: contain; }
+.bm-root button { touch-action: manipulation; }
 
 .bm-toast {
   position: absolute; left: 50%; top: 6px; z-index: 6;

@@ -285,7 +285,13 @@ Game.prototype.reveal = function (x, y) {
 Game.prototype.resize = function (force) {
   var stage = this.ref.stage;
   var availW = stage.clientWidth || 320;
-  var maxH = Math.max(300, Math.min(window.innerHeight - 170, 680));
+  // Высоту экрана запоминаем и обновляем только при смене ширины (поворот телефона): на iPhone
+  // адресная строка прячется и появляется при прокрутке, и иначе поле бы «прыгало» в размере.
+  if (!this.viewH || window.innerWidth !== this.viewW) {
+    this.viewW = window.innerWidth;
+    this.viewH = window.innerHeight;
+  }
+  var maxH = Math.max(300, Math.min(this.viewH - 170, 680));
   var m = { l: 0.35, t: 0.95, r: 1.0, b: 0.35 };
   var cell = Math.floor(Math.min(availW / (this.cols + m.l + m.r), maxH / (this.rows + m.t + m.b)));
   cell = Math.max(24, Math.min(cell, 84));
@@ -445,9 +451,10 @@ Game.prototype.showScreen = function (name) {
   this.ref.toast.classList.remove('bm-show');
   this.root.classList.toggle('bm-menu', !!name);
   this.root.setAttribute('data-screen', name || 'game');
-  // Если верх игры уехал за экран (длинная анкета, карта) — возвращаем его в видимую область.
-  var top = this.root.getBoundingClientRect().top;
-  if (top < 0) this.root.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  // Если игра видна не целиком — прокручиваем к её началу. Во время самой игры страницу
+  // пальцем по игре не сдвинуть (жесты управляют котом), поэтому подвинуть её нужно самим.
+  var rect = this.root.getBoundingClientRect();
+  if (rect.top < 0 || (!name && rect.bottom > window.innerHeight + 1)) this.root.scrollIntoView({ block: 'start', behavior: 'smooth' });
 };
 
 Game.prototype.openMap = function () {
@@ -794,13 +801,15 @@ Game.prototype.bindUI = function () {
   });
   root.addEventListener('blur', function () { self.held = null; });
 
-  // Касание/мышь по полю: короткое нажатие — идти в клетку, свайп — бежать в сторону.
+  // Касание/мышь: короткое нажатие по полю — идти в клетку, свайп в любом месте игры — бежать в сторону.
+  // Слушаем всю игру, а не только лабиринт: иначе свайп мимо поля прокручивает страницу.
   var down = null;
-  this.canvas.addEventListener('pointerdown', function (e) {
+  root.addEventListener('pointerdown', function (e) {
+    if (self.state !== 'play' || e.target.closest('button, a, input, select, label, .bm-overlay')) return;
     down = { x: e.clientX, y: e.clientY };
     root.focus({ preventScroll: true });
   });
-  this.canvas.addEventListener('pointerup', function (e) {
+  root.addEventListener('pointerup', function (e) {
     if (!down || self.state !== 'play') { down = null; return; }
     var dx = e.clientX - down.x, dy = e.clientY - down.y;
     down = null;
@@ -812,7 +821,7 @@ Game.prototype.bindUI = function () {
       self.goToPoint(e.clientX - r.left, e.clientY - r.top);
     }
   });
-  this.canvas.addEventListener('pointercancel', function () { down = null; });
+  root.addEventListener('pointercancel', function () { down = null; });
 
   // Экранный джойстик
   root.querySelectorAll('.bm-dpad [data-dir]').forEach(function (btn) {
