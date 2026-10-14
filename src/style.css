@@ -86,7 +86,6 @@
   align-items: center;
   min-height: 300px;
 }
-.bm-menu .bm-stage { min-height: 460px; }
 .bm-stage canvas { display: block; touch-action: none; cursor: pointer; }
 
 .bm-toast {
@@ -161,7 +160,12 @@
 .bm-big.bm-mid { min-width: 0; height: 42px; padding: 0 18px; font-size: 17px; box-shadow: 0 4px 0 var(--bm-pink-dark); }
 
 /* Панели (карта, гардероб) — сверху вниз, с прокруткой */
-.bm-overlay.bm-panel { justify-content: flex-start; align-items: stretch; overflow-y: auto; gap: 14px; }
+.bm-overlay.bm-panel { justify-content: flex-start; align-items: stretch; gap: 14px; }
+/* Панели (анкета, карта, гардероб, подарок) идут обычным блоком страницы, а не окном со своей
+   прокруткой: на телефоне листается вся страница целиком. Поле на это время прячем. */
+.bm-overlay.bm-panel.bm-show { position: relative; inset: auto; width: 100%; }
+.bm-root[data-screen="form"] .bm-stage canvas, .bm-root[data-screen="map"] .bm-stage canvas,
+.bm-root[data-screen="wardrobe"] .bm-stage canvas, .bm-root[data-screen="gift"] .bm-stage canvas { display: none; }
 .bm-panel-head { display: flex; align-items: center; gap: 10px; }
 
 /* ---------- Карта уровней ---------- */
@@ -229,7 +233,6 @@
 .bm-item-btn.bm-poor { opacity: .55; }
 
 /* ---------- Анкета ---------- */
-.bm-root[data-screen="form"] .bm-stage, .bm-root[data-screen="gift"] .bm-stage { min-height: 620px; }
 .bm-root input, .bm-root select { user-select: text; -webkit-user-select: text; }
 .bm-form { display: flex; flex-direction: column; gap: 12px; text-align: left; }
 .bm-form fieldset {
@@ -255,7 +258,7 @@
 .bm-form select { background-image: linear-gradient(45deg, transparent 50%, #1676c2 50%), linear-gradient(135deg, #1676c2 50%, transparent 50%); background-position: calc(100% - 18px) 20px, calc(100% - 12px) 20px; background-size: 6px 6px; background-repeat: no-repeat; }
 .bm-form input:focus, .bm-form select:focus { border-color: var(--bm-blue); background-color: #fff; }
 .bm-form .bm-field .bm-bad, .bm-form .bm-field .bm-bad:focus { border-color: var(--bm-pink); background-color: #fff0f6; }
-.bm-root[data-screen="start"] .bm-hud, .bm-root[data-screen="form"] .bm-hud, .bm-root[data-screen="gift"] .bm-hud { visibility: hidden; }
+.bm-root[data-screen="start"] .bm-hud, .bm-root[data-screen="form"] .bm-hud, .bm-root[data-screen="gift"] .bm-hud { display: none; }
 .bm-check { display: flex; gap: 10px; align-items: flex-start; padding: 4px 6px; border-radius: 12px; font-size: 14px; font-weight: 700; line-height: 1.35; cursor: pointer; }
 .bm-check.bm-bad { background: #fff0f6; }
 .bm-check input { flex-shrink: 0; width: 22px; height: 22px; margin: 0; accent-color: var(--bm-pink); }
@@ -317,7 +320,7 @@
   justify-content: center;
   margin-top: 12px;
 }
-@media (pointer: coarse) { .bm-dpad { display: grid; } }
+@media (pointer: coarse) { .bm-root[data-screen="game"] .bm-dpad { display: grid; } }
 .bm-dpad button {
   width: 58px; height: 58px; padding: 0; margin: 0;
   border: 0; border-radius: 16px;

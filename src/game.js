@@ -445,6 +445,9 @@ Game.prototype.showScreen = function (name) {
   this.ref.toast.classList.remove('bm-show');
   this.root.classList.toggle('bm-menu', !!name);
   this.root.setAttribute('data-screen', name || 'game');
+  // Если верх игры уехал за экран (длинная анкета, карта) — возвращаем его в видимую область.
+  var top = this.root.getBoundingClientRect().top;
+  if (top < 0) this.root.scrollIntoView({ block: 'start', behavior: 'smooth' });
 };
 
 Game.prototype.openMap = function () {
@@ -619,7 +622,6 @@ Game.prototype.openForm = function () {
   this.ref.formSubmit.disabled = false;
   this.ref.formSubmit.textContent = 'Начать игру';
   this.showScreen('form');
-  this.ref.formScreen.scrollTop = 0;
 };
 
 Game.prototype.submitForm = function () {
@@ -645,6 +647,10 @@ Game.prototype.submitForm = function () {
   });
   if (bad.length) {
     this.ref.formError.textContent = bad[0][1];
+    // Подводим к первому неверному полю, чтобы не искать его глазами.
+    var first = f[bad[0][0]];
+    first.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    if (first.type !== 'checkbox') first.focus({ preventScroll: true });
     this.sound.play('bump');
     return;
   }
@@ -697,7 +703,6 @@ Game.prototype.showGift = function (fromMap) {
   this.ref.giftClaimed.hidden = !claimed;
   this.ref.giftContinue.textContent = fromMap ? 'К уровням' : 'Играть дальше';
   this.showScreen('gift');
-  this.ref.giftScreen.scrollTop = 0;
   if (!fromMap) {
     this.sound.play('win');
     this.spawnConfetti(60);
